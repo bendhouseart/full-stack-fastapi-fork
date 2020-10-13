@@ -204,21 +204,18 @@ aws_network_setup:
   message: Do you want to set up or connect to existing AWS infrastructure?
   default: false
 
-#print_network_setup_bool:
-# type: pprint
-#  statement:
-
-
 vpc_name:
   when: "{{ nuki.aws_network_setup }}"
   type: input
   message: Enter name of VPC otherwise leave blank for none
   default: ""
+
 azs:
   when: "{{ nuki.aws_network_setup }}"
   type: input
   message: Number of azs
   default: '1'
+
 num_azs:
   when: "{{ nuki.aws_network_setup }}"
   type: input
@@ -261,15 +258,12 @@ post_render_action_:
   choices:
     - deploy: Deploy the instance?
 
-init_terraform_single_:
-  type: command
-  chdir: "{{ calling_directory }}"
-  command: "cd {{ nuki.project_slug }}/terraform_single_instance && terraform init"
 
-init_terraform_eks:
-  type: command
-  chdir: "{{ calling_directory }}"
-  command: "cd {{ nuki.project_slug }}/terraform_managed_cluster && terraform init"
+
+#init_terraform_eks:
+#  type: command
+#  chdir: "{{ calling_directory }}"
+#  command: "cd {{ nuki.project_slug }}/terraform_managed_cluster && terraform init"
 
 # this is dope, note all paths are absolute in nuki so as long as we have
 # access to calling directory we can go anywhere and do anything
@@ -309,3 +303,9 @@ generate_ssh_keys_:
   message: creating ssh keys
   chdir: "{{ calling_directory}}"
   command: "cd {{ nuki.project_slug }} && ssh-keygen -t rsa -f {{ nuki.ssh_key_name }} -q -N ''"
+
+
+init_terraform_single_:
+  type: command
+  chdir: "{{ calling_directory }}"
+  command: "sleep 1 && cd {{ nuki.project_slug }}/terraform_single_instance && terraform init"

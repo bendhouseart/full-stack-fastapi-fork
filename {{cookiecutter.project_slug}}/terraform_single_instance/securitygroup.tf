@@ -32,3 +32,22 @@ resource "aws_security_group_rule" "private_ports" {
   to_port           = var.private_ports[count.index]
   cidr_blocks       = var.private_port_cidrs
 }
+
+resource "aws_security_group" "ssh" {
+  vpc_id = var.vpc_id == "" ? null : var.vpc_id
+
+  egress {
+    from_port = 0
+    protocol = "-1"
+    to_port = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port = 22
+    protocol = "tcp"
+    to_port = 22
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+}

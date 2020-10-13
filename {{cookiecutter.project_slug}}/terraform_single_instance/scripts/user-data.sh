@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
-sudo apt-get update 
+logfile=/home/ubuntu/did_user_data_run.txt
+sudo apt-get update -y >>$logfile 2>&1
 # get an install docker and curl
-sudo apt-get install curl docker.io lvm2
+sudo apt-get install curl docker.io lvm2 -y >>$logfile 2>&1
 # start docker service
-sudo systemctl start docker
-sudo systemctl enable docker
+sudo systemctl start docker >>$logfile 2>&1
+sudo systemctl enable docker >>$logfile 2>&1
 
 # install docker compose
-sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /user/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose >>$logfile 2>&1
+sudo chmod +x /usr/local/bin/docker-compose >>$logfile 2>&1
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose  >>$logfile 2>&1
 
-echo "User data ran." > /home/ubuntu/did_user_data_run.txt
-pushd "/home/ubuntu/deployments/{{ cookiecutter.project_slug }}"
+echo "User data ran." >> $logfile 2>&1
+pushd "/home/ubuntu/deployments/base-project"
 docker-compose up
-
-
 

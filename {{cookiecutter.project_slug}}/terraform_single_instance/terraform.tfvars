@@ -8,6 +8,7 @@ private_key_path = "{{cookiecutter.private_key_path}}"
 public_key_path = "{{cookiecutter.public_key_path}}"
 create_sg = {{cookiecutter.create_sg}}
 create = {{cookiecutter.create}}
-create_ebs_volume = "{{cookiecutter.create_ebs_volume}}"
+create_ebs_volume = {{cookiecutter.create_ebs_volume}}
 domain_name = "{{cookiecutter.domain_main}}"
+hostname = ""
 

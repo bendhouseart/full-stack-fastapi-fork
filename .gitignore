@@ -19,3 +19,18 @@ deployments
 # specific to anthony's development
 push_to_demo_repo.sh
 
+.vscode
+testing-project
+.mypy_cache
+poetry.lock
+dev-link/
+
+.idea/
+Pipfile*
+
+mykey*
+.terraform/
+*tfstate*
+kubeconfig*
+
+deployments

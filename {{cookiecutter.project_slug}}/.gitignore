@@ -1,3 +1,16 @@
 .vscode
 .mypy_cache
 docker-stack.yml
+.vscode
+testing-project
+.mypy_cache
+poetry.lock
+dev-link/
+
+.idea/
+Pipfile*
+
+mykey*
+.terraform/
+*tfstate*
+kubeconfig*

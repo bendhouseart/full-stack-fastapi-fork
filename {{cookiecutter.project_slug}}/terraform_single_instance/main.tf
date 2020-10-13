@@ -37,14 +37,14 @@ resource "aws_instance" "this" {
   //}
 
   // copying over source code to instance
-  //provisioner "file" {
-    //source = "../../deployments/"
-    //destination = "/home/ubuntu/"
-  //}
+  provisioner "file" {
+    source = "../../deployments/"
+    destination = "/home/ubuntu/"
+  }
 
 //  Important
   //user_data = data.template_cloudinit_config.cloud-init-config.rendered
-  //user_data = file("scripts/user-data.sh")
+  user_data = file("scripts/user-data.sh")
 
   subnet_id              = var.subnet_id
   vpc_security_group_ids = compact(concat(aws_security_group.this.*.id, var.additional_security_group_ids))
@@ -63,7 +63,7 @@ variable "domain_name" {
 variable "hostname" {
   description = "The hostname - ie hostname.example.com"
   type        = string
-  default     = "hostname"
+  default     = ""
 }
 
 resource "aws_route53_zone" "launch_with_click" {
@@ -74,7 +74,8 @@ resource "aws_route53_zone" "launch_with_click" {
 resource "aws_route53_record" "launch_with_click" {
   //count = var.domain_name != "" && var.hostname != "" ? 1 : 0
 
-  name    = "${var.hostname}.${var.domain_name}"
+
+  name    = var.domain_name
   type    = "A"
   ttl     = "300"
   zone_id = aws_route53_zone.launch_with_click.zone_id
@@ -83,6 +84,18 @@ resource "aws_route53_record" "launch_with_click" {
 
 output "name_server" {
   value=aws_route53_zone.launch_with_click.name_servers
+}
+
+output "public_dns" {
+  value = aws_instance.this.public_dns
+}
+
+output "public_ip" {
+  value = aws_instance.this.public_ip
+}
+
+output "associated_ip" {
+  value = aws_instance.this.associate_public_ip_address
 }
 
 
