@@ -204,9 +204,9 @@ aws_network_setup:
   message: Do you want to set up or connect to existing AWS infrastructure?
   default: false
 
-print_network_setup_bool:
-  type: pprint
-  statement:
+#print_network_setup_bool:
+# type: pprint
+#  statement:
 
 
 vpc_name:
@@ -261,6 +261,15 @@ post_render_action_:
   choices:
     - deploy: Deploy the instance?
 
+init_terraform_single_:
+  type: command
+  chdir: "{{ calling_directory }}"
+  command: "cd {{ nuki.project_slug }}/terraform_single_instance && terraform init"
+
+init_terraform_eks:
+  type: command
+  chdir: "{{ calling_directory }}"
+  command: "cd {{ nuki.project_slug }}/terraform_managed_cluster && terraform init"
 
 # this is dope, note all paths are absolute in nuki so as long as we have
 # access to calling directory we can go anywhere and do anything
