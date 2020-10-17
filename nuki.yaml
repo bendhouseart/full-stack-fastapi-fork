@@ -153,13 +153,12 @@ docker_image_frontend:
   message: Enter Prefix for docker image frontend
   default: "{{nuki.docker_image_prefix}}frontend"
 ###########################################################
+
 _copy_without_render:
   - frontend/src/**/*.html
   - frontend/src/**/*.vue
   - frontend/node_modules/*
   - backend/app/app/email-templates/**
-
-
 
 aws_region:
   type: input
@@ -251,47 +250,13 @@ render:
   context_key: cookiecutter
   existing_context: "{{ nuki }}"
   no_input: true
+  output_dir: "{{ calling_directory }}"
 
 post_render_action_:
   type: checkbox
   message: What do you want to do next?
   choices:
     - deploy: Deploy the instance?
-
-
-
-#init_terraform_eks:
-#  type: command
-#  chdir: "{{ calling_directory }}"
-#  command: "cd {{ nuki.project_slug }}/terraform_managed_cluster && terraform init"
-
-# this is dope, note all paths are absolute in nuki so as long as we have
-# access to calling directory we can go anywhere and do anything
-# process for demo should be cd to project dir, clone this repo, it sets itself up
-# later set up deployment using command functions as below.
-#deploy_example_:
-#  type: command
-#  chdir: "{{ calling_directory }}"
-#  #command: "cd {{ nuki.project_slug }} && echo '{{ calling_directory }}' >> this.txt"
-#
-#
-#
-#deploy_eks_:
-#  type: command
-#  chdir: "{{ calling_directory }}"
-#  #command: "cd {{ nuki.project_slug }}  && echo 'executing deploy_eks_command' >> eks.txt"
-#
-#
-#deploy_single_:
-#  type: command
-#  chdir: "{{ calling_directory }}"
-#  #command: "cd {{ nuki.project_slug }}  && echo 'executing deploy_single_command' >> single.txt"
-#
-#deploy_local_:
-#  type: command
-#  chdir: "{{ calling_directory }}"
-#  #command: "cd {{ nuki.project_slug }} && echo 'executing deploy_local_command' >> local.txt"
-
 
 prompt_user_to_enter_ssh_keys:
   type: confirm
@@ -301,11 +266,25 @@ generate_ssh_keys_:
   when: "{{ nuki.prompt_user_to_enter_ssh_keys and nuki.ssh_key_name  }}"
   type: command
   message: creating ssh keys
-  chdir: "{{ calling_directory}}"
-  command: "cd {{ nuki.project_slug }} && ssh-keygen -t rsa -f {{ nuki.ssh_key_name }} -q -N ''"
+  chdir: "{{ nuki._output_dir }}/{{ nuki.project_slug }}"
+  command: |
+    ssh-keygen -t rsa -f {{ nuki.ssh_key_name }} -q -N ''
 
 
 init_terraform_single_:
   type: command
-  chdir: "{{ calling_directory }}"
-  command: "sleep 1 && cd {{ nuki.project_slug }}/terraform_single_instance && terraform init"
+  chdir: "{{ nuki._output_dir }}/{{ nuki.project_slug }}"
+  command: |
+    sleep 1
+    cp {{ nuki.ssh_key_name}}* terraform_single_instance/
+    cd terraform_single_instance
+    terraform init
+
+init_terraform_cluster_:
+  type: command
+  chdir: "{{ nuki._output_dir }}/{{ nuki.project_slug }}"
+  command: |
+    sleep 1
+    cp {{ nuki.ssh_key_name}}* terraform_managed_cluster/
+    cd terraform_managed_cluster/
+    terraform init
