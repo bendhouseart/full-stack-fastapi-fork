@@ -74,23 +74,23 @@ variable "hostname" {
   default     = ""
 }
 
-resource "aws_route53_zone" "launch_with_click" {
-  //count = var.domain_name != "" ? 1 : 0
-  name  = var.domain_name
-}
-
-resource "aws_route53_record" "launch_with_click" {
-  //count = var.domain_name != "" && var.hostname != "" ? 1 : 0
-  name    = var.domain_name
-  type    = "A"
-  ttl     = "300"
-  zone_id = aws_route53_zone.launch_with_click.zone_id
-  records = [join("", aws_instance.this.*.public_ip)]
-}
-
-output "name_server" {
-  value=aws_route53_zone.launch_with_click.name_servers
-}
+//resource "aws_route53_zone" "launch_with_click" {
+//  //count = var.domain_name != "" ? 1 : 0
+//  name  = var.domain_name
+//}
+//
+//resource "aws_route53_record" "launch_with_click" {
+//  count = var.domain_name != "" && var.hostname != "" ? 1 : 0
+//  name    = var.domain_name
+//  type    = "A"
+//  ttl     = "300"
+//  zone_id = aws_route53_zone.launch_with_click.zone_id
+//  records = [join("", aws_instance.this.*.public_ip)]
+//}
+//
+//output "name_server" {
+//  value=aws_route53_zone.launch_with_click.name_servers
+//}
 
 output "public_dns" {
   value = aws_instance.this.public_dns
